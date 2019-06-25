@@ -33,7 +33,8 @@ const uint8_t FLASH_DATA[NUMBER_LED_STATES][7] PROGMEM = {
   {0,  0,  0,  0,  0,  0,  0}, ///< OFF
   {0,  0,  0,  0,  0,  0,  0}, ///< ON
   {2, 12,  0,  0,  0,  0,  0}, ///< F1
-  {2,  4,  2, 12,  0,  0,  0}  ///< F2
+  {2,  4,  2, 12,  0,  0,  0}, ///< F2
+  {2,  4,  2,  4,  2,  4,  0}  ///< F3
 };
 
 static LED_State led_state = LED_OFF;
@@ -68,6 +69,10 @@ void led_switch(LED_State state) {
       break;
 
     case LED_BLINK2:
+      led_set(1);
+      break;
+
+    case LED_BLINK3:
       led_set(1);
       break;
 
