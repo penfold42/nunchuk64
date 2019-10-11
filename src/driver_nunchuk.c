@@ -114,23 +114,62 @@ static void get_joystick_state_nunchuk(const ContollerData *cd, Joystick *joysti
     }
     break;
 
-//     case LED_BLINK3: {
-//     }
-//     break;
+    // ===================================
+    // LED is BLINK3 (Amiga mouse mode)
+    // ===================================
+    case LED_BLINK3: {
+      // Analog Joystick X
+      uint8_t sx = cd->byte[0];
+
+      if (sx > 210) {
+        (*joystick) |= RIGHT;
+      } else if (sx < 40) {
+        (*joystick) |= LEFT;
+      }
+
+      // Analog Joystick Y
+      uint8_t sy = cd->byte[1];
+
+      if (sy > 210) {
+        (*joystick) |= UP;
+      } else if (sy < 40) {
+        (*joystick) |= DOWN;
+      }
+    }
+    break;
 
     case NUMBER_LED_STATES: {
     }
     break;
   }
 
-  // Z Button
-  if ((cd->byte[5] & 0x01) == 0) {
-    (*joystick) |= BUTTON;
-  }
+  switch (led_get_state()) {
+    case LED_BLINK3: {
+      // Z Button
+      if ((cd->byte[5] & 0x01) == 0) {
+        (*joystick) |= BUTTON;
+      }
 
-  // C Button
-  if ((cd->byte[5] & 0x02) == 0) {
-    (*joystick) |= AUTOFIRE;
+      // C Button
+      if ((cd->byte[5] & 0x02) == 0) {
+        (*joystick) |= BUTTON;
+      }
+    }
+    break;
+
+    default: {
+      // Z Button
+      if ((cd->byte[5] & 0x01) == 0) {
+        (*joystick) |= BUTTON;
+      }
+
+      // C Button
+      if ((cd->byte[5] & 0x02) == 0) {
+        (*joystick) |= AUTOFIRE;
+      }
+    }
+    break;
+
   }
 }
 
