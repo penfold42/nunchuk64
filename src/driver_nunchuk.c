@@ -30,6 +30,13 @@
 #define ACCEL_ZEROY   512
 #define ACCEL_ZEROZ   512
 
+static inline int16_t abs(int16_t in) {
+  if (in < 0)
+    return -in;
+  else
+    return in;
+}
+
 static inline uint16_t nunchuk_accelx(const ContollerData *cd) {
   return ((0x0000 | (cd->byte[2] << 2)) + ((cd->byte[5] & 0x0c) >> 2));
 }
@@ -110,13 +117,10 @@ static void get_joystick_state_nunchuk(const ContollerData *cd, Joystick *joysti
     break;
 
     case LED_BLINK1:
-    case LED_BLINK2: {
+    case LED_BLINK2:
+    case LED_BLINK3: {
     }
     break;
-
-//     case LED_BLINK3: {
-//     }
-//     break;
 
     case NUMBER_LED_STATES: {
     }
@@ -135,36 +139,63 @@ static void get_joystick_state_nunchuk(const ContollerData *cd, Joystick *joysti
 }
 
 static void get_paddle_state_nunchuk(const ContollerData *cd, Paddle *paddle) {
-  if (led_get_state() == LED_BLINK1) {
+  switch (led_get_state()) {
+    case LED_BLINK1: {
+      int16_t x = nunchuk_accelx(cd);
+      int16_t y = nunchuk_accely(cd);
 
-    int16_t x = nunchuk_accelx(cd);
-    int16_t y = nunchuk_accely(cd);
+      // x = scale(x, 2.3);
+      // y = scale(y, 2.3);
+      // x = scale(x, 2);
+      // y = scale(y, 2);
 
-    // x = scale(x, 2.3);
-    // y = scale(y, 2.3);
-    // x = scale(x, 2);
-    // y = scale(y, 2);
+      paddle->axis_x = x;
+      paddle->axis_y = y;
+    }
+    break;
 
-    paddle->axis_x = x;
-    paddle->axis_y = y;
+    case LED_BLINK2: {
+      int16_t x = cd->byte[0] << 2;
+      int16_t y = cd->byte[1] << 2;
 
-  } else if (led_get_state() == LED_BLINK2) {
+      // x = scale(x, 2);
+      // y = scale(y, 2);
 
-    int16_t x = cd->byte[0] << 2;
-    int16_t y = cd->byte[1] << 2;
+      paddle->axis_x = x;
+      paddle->axis_y = y;
+    }
+    break;
 
-    // x = scale(x, 2);
-    // y = scale(y, 2);
+    case LED_BLINK3: {
+      int16_t x = cd->byte[0] << 2;
+      int16_t y = cd->byte[1] << 2;
 
-    paddle->axis_x = x;
-    paddle->axis_y = y;
+      // x = scale(x, 2);
+      // y = scale(y, 2);
+
+      // -512..0..512
+      if ( abs(x - 512) > abs(y - 512) ) {
+        paddle->axis_x = x;
+        paddle->axis_y = x;
+      } else {
+        paddle->axis_x = y;
+        paddle->axis_y = y;
+      }
+    }
+    break;
+
+    default: {
+    }
+    break;
   }
+
 }
 
 uint8_t get_paddle_enabled_nunchuk(void) {
   switch (led_get_state()) {
     case LED_BLINK1:
     case LED_BLINK2:
+    case LED_BLINK3:
       return TRUE;
 
     default:
