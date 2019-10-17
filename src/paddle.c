@@ -25,7 +25,7 @@
 
 #include "ioconfig.h"
 #include "enums.h"
-
+#include "led.h"
 #include "paddle.h"
 
 void paddle_init(void) {
@@ -139,7 +139,7 @@ void paddle_stop(Port port) {
   }
 }
 
-void paddle_update(Paddle *port_a, Paddle *port_b) {
+void paddle_update(Paddle *port_a, Paddle *port_b, LED_State mode) {
 
   // ===================================
   //  CONTROL PORT A
@@ -154,6 +154,13 @@ void paddle_update(Paddle *port_a, Paddle *port_b) {
   uint16_t a_y = port_a->axis_y;
   uint16_t b_x = port_b->axis_x;
   uint16_t b_y = port_b->axis_y;
+
+  if (mode == LED_BLINK3) {
+    a_x = port_a->axis_x;
+    a_y = port_b->axis_x;
+    b_x = 0;
+    b_y = 0;
+  } 
 
   if (a_x > 1024)
     a_x = 1024;
