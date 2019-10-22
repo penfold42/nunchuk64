@@ -139,7 +139,7 @@ void paddle_stop(Port port) {
   }
 }
 
-void paddle_update(Paddle *port_a, Paddle *port_b, LED_State mode) {
+void paddle_update(Paddle *port_a, Paddle *port_b, LED_State mode, uint8_t switched) {
 
   // ===================================
   //  CONTROL PORT A
@@ -161,6 +161,12 @@ void paddle_update(Paddle *port_a, Paddle *port_b, LED_State mode) {
     b_x = 0;
     b_y = 0;
   } 
+
+  if (switched) {
+    uint16_t temp;
+    temp = a_x; a_x = b_x; b_x = temp;
+    temp = a_y; a_y = b_y; b_y = temp;
+  }
 
   if (a_x > 1024)
     a_x = 1024;

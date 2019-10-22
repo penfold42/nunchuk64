@@ -54,6 +54,7 @@ extern void paddle_stop(Port port);
 * mode!=BLINK3 : normal X/Y analog joystick
 * mode==BLINK3 : C64 paddles 2 Wii -> 1 C64 port
 */
-extern void paddle_update(Paddle *port_a, Paddle *port_b, LED_State mode);
+extern void paddle_update(Paddle *port_a, Paddle *port_b, LED_State mode, uint8_t switched);
+
 
 #endif

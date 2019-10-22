@@ -24,6 +24,7 @@
 #define _JOYSTICK_H_
 
 #include <inttypes.h>
+#include "led.h"
 
 enum Joystick_State {
   // joystick data
@@ -62,7 +63,9 @@ extern void joystick_init(void);
 * The bit (see Joystick_State) are set inside the respective parameter
 */
 extern void joystick_update(Joystick port_a, uint8_t ext_a,
-                            Joystick port_b, uint8_t ext_b);
+                            Joystick port_b, uint8_t ext_b,
+                            LED_State mode, uint8_t switched);
+
 
 /**
 * @brief poll joystick routines (for autofire)

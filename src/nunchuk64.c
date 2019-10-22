@@ -199,6 +199,13 @@ int main(void) {
       }
     }
 
+    joystick_update(joystick[PORT_A], ext[PORT_A],
+                    joystick[PORT_B], ext[PORT_B],
+                    led_get_state(), switched_ports);
+
+    paddle_update(&paddle[PORT_A], &paddle[PORT_B],
+                    led_get_state(), switched_ports);
+/*
     // switched mode?
     if (switched_ports == FALSE) {
       joystick_update(joystick[PORT_A], ext[PORT_A], joystick[PORT_B], ext[PORT_B]);
@@ -207,6 +214,7 @@ int main(void) {
       joystick_update(joystick[PORT_B], ext[PORT_B], joystick[PORT_A], ext[PORT_A]);
       paddle_update(&paddle[PORT_B], &paddle[PORT_A], led_get_state());
     }
+*/
   }
 
   //  MAIN LOOP
